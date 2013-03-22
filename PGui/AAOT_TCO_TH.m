@@ -1,5 +1,7 @@
 function [] = AAOT_TCO_TH(CPC, tchamber, pressure, ip, handles)
 
+
+
 FileInit('AAOT_TCO_TH.csv');
 FileInit('AAOT_TCO_TH_ref.csv');
 
@@ -35,6 +37,7 @@ for i= 0:600:9000
     dlmwrite('AAOT_TCO_TH_ref.csv', refLog , '-append');
     handles.metricdata.time = plotnpause(600,10, CPC, tchamber, handles);
 end
+
 
 RT_stoplog(dutobj, 1);
 values = RT_dataparse(0, 'AAOT_TCO_TH.csv.csv');

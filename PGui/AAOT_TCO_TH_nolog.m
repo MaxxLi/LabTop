@@ -40,8 +40,7 @@ end
 % values = RT_dataparse(0, 'AAOT_TCO_TH.csv.csv');
 % pause(1);
 % RT_stoplog(dutobj, 2);
-delete(handles.PressureAxes);
-delete(handles.TempAxes);
+
 pause(1);
 PowerOff(tchamber);
 
