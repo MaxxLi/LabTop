@@ -1,4 +1,4 @@
-function [time] = AAOT(CPC, tchamber, pressure, ip, handles)
+function [time] = AAOT(CPC, tchamber, ip, handles)
 
 FileInit('BB10_AAOT_ref.csv');
 FileInit('BB10_AAOT.csv');

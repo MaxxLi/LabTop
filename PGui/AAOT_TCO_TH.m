@@ -5,7 +5,7 @@ function [] = AAOT_TCO_TH(CPC, tchamber, pressure, ip, handles)
 FileInit('AAOT_TCO_TH.csv');
 FileInit('AAOT_TCO_TH_ref.csv');
 
-handles.metricdata.time = SetPressure(CPC, tchamber, 100, handles);
+handles.metricdata.time = SetPressure(CPC, tchamber, pressure, handles);
 
 
 refLog = zeros(1,3);

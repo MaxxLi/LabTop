@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 22-Mar-2013 12:33:18
+% Last Modified by GUIDE v2.5 06-Mar-2013 11:28:33
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -147,6 +147,28 @@ function startButton_Callback(hObject, eventdata, handles)
 %handles.metricdata.time = plotnpause(10,1,CPC,tchamber, handles);
 
 
+try
+    tchamber = gpib('ni',0,handles.metricdata.CPC);
+    pause(0.5);
+    fopen(tchamber);
+catch e
+    errordlg('Error initialiating the Temperature Chamber');
+    fclose all;
+    clear all;
+end
+
+PowerOn(tchamber); %Turns on temperature chamber
+Standby(tchamber);
+
+try
+    CPC = gpib('ni',0,handles.metricdata.tchamber);
+    pause(0.5);
+    fopen(CPC);
+catch e
+    errordlg('Error initialiating the Pressure Chamber');
+    fclose all;
+    clear all;
+end 
 
 
 ip = get(handles.DeviceIP, 'String');
@@ -156,15 +178,15 @@ if (get(handles.ckLog , 'Value') ==1)
     switch get(handles.MacroMenu,'value')
         case 2
             fopenf('Beginning test for Absolute Accuracy over Temperature...\n');
-            AAOT(CPC, tchamber, ip, handles);
+            PresSweep(CPC, tchamber,25, ip, handles);
         case 3
             fopenf('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis...\n');
-            AAOT_TCO_TH(CPC, tchamber, 70, handles);
+            Pres_H(CPC, tchamber, 25, ip, handles);
         case 4
             fopenf('Beginning test Linearity and Pressure Hysteresis...\n');
-            Lin_PH(CPC, tchamber, 25, ip, handles);
+            TempRamp(CPC, tchamber, 100, ip, handles);
         case 5
-            fopenf('Temperature Hysteresys');
+            fopenf('');
             Temp_H(CPC, tchamber, ip, 100, handles);
         case 6
             fopenf('Auto Mode Enabled');
@@ -191,14 +213,14 @@ else
     
     switch get(handles.MacroMenu,'value')
         case 2
-            msgbox('Beginning test for Absolute Accuracy over Temperature WITHOUT logging...\n');
-            AAOT_nolog(CPC,tchamber, 70, ip,handle);
+            msgbox('Pressure Sweep');
+            PresSweep_nolog(CPC, tchamber,25, ip, handles);
         case 3
-            msgbox('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis WITHOUT logging...\n');
-            AAOT_TCO_TH_nolog(CPC, tchamber, 70, handles);
+            msgbox('Pressure Histeresys');
+            Pres_H_nolog(CPC, tchamber, 25, ip, handles);
         case 4
-            msgbox('Beginning test Linearity and Pressure Hysteresis WITHOUT logging...\n');
-            Lin_PH_nolog(CPC, tchamber, 25, ip, handles);
+            msgbox('Temperature Ramp');
+            TempRamp_nolog(CPC, tchamber, 100, ip, handles);
         case 5
             msgbox('Temperature Hysteresys');
             Temp_H_nolog(CPC, tchamber, ip, 100, handles);
@@ -454,36 +476,3 @@ else
     set(handles.GPIB_CPC,'Enable','off');
     set(handles.GPIB_Temp,'Enable','off');
 end
-
-
-% --- Executes on button press in initButton.
-function initButton_Callback(hObject, eventdata, handles)
-% hObject    handle to initButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-set(handles.initButton,'Enable','off');
-
-try
-    tchamber = gpib('ni',0,handles.metricdata.CPC);
-    pause(0.5);
-    fopen(tchamber);
-catch e
-    errordlg('Error initialiating the Temperature Chamber');
-    fclose all;
-    clear all;
-end
-
-PowerOn(tchamber); %Turns on temperature chamber
-Standby(tchamber);
-
-try
-    CPC = gpib('ni',0,handles.metricdata.tchamber);
-    pause(0.5);
-    fopen(CPC);
-catch e
-    errordlg('Error initialiating the Pressure Chamber');
-    fclose all;
-    clear all;
-end 
-set(handles.startButton,'Enable','on');
