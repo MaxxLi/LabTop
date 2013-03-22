@@ -1,15 +1,10 @@
-function [pressure] = Getpressure(CPC)
+function [pressure] = GetPressure(CPC)
    
 
     %Gets the temperature reading from the chamber
     
     
    % a = zeros(1,30);
-    for j = 1:30
-       
-        
-        
-    end
     
     fprintf(CPC, 'A?');
     pause(0.1);

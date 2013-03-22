@@ -16,8 +16,11 @@ function [time] = SetPressure( CPC, tchamber, pressure, handles )
             plot(handles.PressureAxes,handles.metricdata.time,holder, 'r.'); 
             plot(handles.TempAxes, handles.metricdata.time, holdert, 'b.'); 
             
-			presArray = [ holder, presArray ];
-			presArray = presArray(1:10);
+            for i = 1:9
+                presArray(i+1)= presArray(i);
+            end
+            presArray(1) = holdert;
+            
 			if ((abs( mean(presArray) - pressure)) <= 0.1)
 				break;
             end
