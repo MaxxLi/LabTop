@@ -1,0 +1,24 @@
+
+
+
+PROFILE 1	(varPres)
+	Temp: 25					Pressure:ramp (850 -> 1150)
+
+	
+PROFILE 2	(varTemp)
+	Temp: ramp (5 -	65)			Pressure: 1000 mbar (850 -> 1150)
+	
+
+PROFILE 3	(VarComp)
+	Temp: ramp (5 -	65)			Pressure: ramp 
+
+
+PROFILE 4	(Pressure Histeresys)
+	Temp: 25					Pressure: Cycle (850 -> 1150 ->850)
+	
+	
+PROFILE 5	(Temp Histeresys)
+	Temp: Cycle(5 -> 65 -> 5)	Pressure: 1000mbar
+	
+
+	
