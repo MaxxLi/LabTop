@@ -59,8 +59,8 @@ handles.output = hObject;
 handles.metricdata.temp = 0;
 handles.metricdata.pressure = 0;
 handles.metricdata.Manual = 0;
-handles.metricdata.CPC = 1;
-handles.metricdata.tchamber= 2;
+handles.metricdata.GPIB_CPC = 1;
+handles.metricdata.GPIB_tchamber= 2;
 handles.metricdata.ip= 0;
 handles.metricdata.isLog= 0;
 handles.metricdata.time= 0;
@@ -111,7 +111,7 @@ function GPIB_Temp_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of GPIB_Temp as text
 %        str2double(get(hObject,'String')) returns contents of GPIB_Temp as a double
 if (str_isnumeric(get(hObject,'String')))
-    handles.metricdata.tchamber = str2double(get(hObject,'String'));
+    handles.metricdata.GPIB_tchamber = str2double(get(hObject,'String'));
 else
     msgbox('Please input a number','Error','error');
     
@@ -130,7 +130,7 @@ function GPIB_CPC_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of GPIB_CPC as text
 %        str2double(get(hObject,'String')) returns contents of GPIB_CPC as a double
 if (str_isnumeric(get(hObject,'String')))
-    handles.metricdata.CPC = str2double(get(hObject,'String'));
+    handles.metricdata.GPIB_CPC = str2double(get(hObject,'String'));
 else
     msgbox('Please input a number','Error','error');
     
@@ -231,11 +231,12 @@ function resetButton_Callback(hObject, eventdata, handles)
 % hObject    handle to resetButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-set(handles.startButton,'Enable','on');
+set(handles.startButton,'Enable','off');
 set(handles.resetButton,'Enable','off');
-return;
-clear all;
-close all;
+set(handles.initButton,'Enable','on');
+PowerOff(handles.metricdata.tchamber);
+CleanUp(handles.metricdata.CPC);
+CleanUp(handles.metricdata.tchamber);
 
 
 
@@ -463,27 +464,10 @@ function initButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 set(handles.initButton,'Enable','off');
-
-try
-    tchamber = gpib('ni',0,handles.metricdata.CPC);
-    pause(0.5);
-    fopen(tchamber);
-catch e
-    errordlg('Error initialiating the Temperature Chamber');
-    fclose all;
-    clear all;
-end
-
+tchamber = InitT(handles.metricdata.GPIB_tchamber);
 PowerOn(tchamber); %Turns on temperature chamber
 Standby(tchamber);
-
-try
-    CPC = gpib('ni',0,handles.metricdata.tchamber);
-    pause(0.5);
-    fopen(CPC);
-catch e
-    errordlg('Error initialiating the Pressure Chamber');
-    fclose all;
-    clear all;
-end 
+handles.metricdata.tchamber = tchamber;
+CPC = InitP(handles.metricdata.GPIB_CPC);
+handles.metricdata.CPC = CPC;
 set(handles.startButton,'Enable','on');
