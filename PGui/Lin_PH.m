@@ -22,7 +22,7 @@ for p = 70:1:120
     dlmwrite('BB10_Lin_PH_ref.csv', refLog , '-append');   
     pause(0.5);
 	disp('Data Streaming...');
-    RT_StartLog(dutobj);
+    RT_startlog(dutobj);
     handles.metricdata.time = plotnpause(5,1, CPC, tchamber, handles);
     RT_stoplog(dutobj, 1);
 	disp('Streaming Stopped.');
