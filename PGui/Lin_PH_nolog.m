@@ -2,7 +2,7 @@ function [] = Lin_PH_nolog(CPC, tchamber,temperature, ip, handles)
 
 % FileInit('BB10_Lin_PH.csv');
 % FileInit('BB10_Lin_PH_ref.csv');
-
+disp(['Setting Temperature to ', num2str(temperature), ' degrees...']);
 handles.metricdata.time = SetTemp(CPC, tchamber, temperature, handles);
 
 % dutobj = RT_init(ip);
@@ -10,10 +10,11 @@ handles.metricdata.time = SetTemp(CPC, tchamber, temperature, handles);
 
 % refLog = zeros(1,3);
 % presID = 0;
-
+disp('Beginning Pressure Steps.');
 for p = 70:1:120
     %presID = presID + 1;
 	handles.metricdata.time = SetPressure(CPC, tchamber, p, handles);
+	disp(['Current pressure at ',num2str(p)]);
     % refLog(1,1) = GetPressure(CPC);
     % refLog(1,2) = GetTemp(tchamber);
     % refLog(1,3) = presID;    
@@ -24,9 +25,12 @@ for p = 70:1:120
     % RT_stoplog(dutobj, 1);
     % values = RT_dataparse(tempID,'BB10_Lin_PH.csv');
 end
+
+disp('Beginning Stepping Down...');
 for p = 120:-1:70
     %presID = presID + 1;
 	handles.metricdata.time = SetPressure(CPC, tchamber, p, handles);
+	disp(['Current pressure at ',num2str(p)]);
     % refLog(1,1) = GetPressure(CPC);
     % refLog(1,2) = GetTemp(tchamber);
     % refLog(1,3) = presID;    
