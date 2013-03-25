@@ -5,7 +5,7 @@ function [time] = SetPressure( CPC, tchamber, pressure, handles )
     fprintf(CPC, ['Setpt ',num2str(pressure)])   
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%PRESSURECHECK%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	presArray = zeros(1,50);
+	presArray = zeros(1,10);
 
 	while(1)
 			holder = GetPressure(CPC);
@@ -19,7 +19,10 @@ function [time] = SetPressure( CPC, tchamber, pressure, handles )
             for i = 1:9
                 presArray(i+1)= presArray(i);
             end
-            presArray(1) = holdert;
+            presArray(1) = holder;
+            presArray
+            mean(presArray)
+            pressure
             
 			if ((abs( mean(presArray) - pressure)) <= 0.1)
 				break;

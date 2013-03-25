@@ -59,8 +59,8 @@ handles.output = hObject;
 handles.metricdata.temp = 0;
 handles.metricdata.pressure = 0;
 handles.metricdata.Manual = 0;
-handles.metricdata.GPIB_CPC = 1;
-handles.metricdata.GPIB_tchamber= 2;
+handles.metricdata.GPIB_CPC = 2;
+handles.metricdata.GPIB_tchamber= 1;
 handles.metricdata.ip= 0;
 handles.metricdata.isLog= 0;
 handles.metricdata.time= 0;
@@ -145,7 +145,8 @@ function startButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 %handles.metricdata.time = plotnpause(5,1,CPC,tchamber, handles);
 %handles.metricdata.time = plotnpause(10,1,CPC,tchamber, handles);
-
+global tchamber;
+global CPC;
 
 
 
@@ -161,7 +162,7 @@ if (get(handles.ckLog , 'Value') ==1)
             fopenf('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis...\n');
             AAOT_TCO_TH(CPC, tchamber, 70, handles);
         case 4
-            fopenf('Beginning test Linearity and Pressure Hysteresis...\n');
+            disp('Beginning test Linearity and Pressure Hysteresis...\n');
             Lin_PH(CPC, tchamber, 25, ip, handles);
         case 5
             fopenf('Temperature Hysteresys');
@@ -231,12 +232,14 @@ function resetButton_Callback(hObject, eventdata, handles)
 % hObject    handle to resetButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global tchamber;
+global CPC;
 set(handles.startButton,'Enable','off');
 set(handles.resetButton,'Enable','off');
 set(handles.initButton,'Enable','on');
-PowerOff(handles.metricdata.tchamber);
-CleanUp(handles.metricdata.CPC);
-CleanUp(handles.metricdata.tchamber);
+PowerOff(tchamber);
+CleanUp(CPC);
+CleanUp(tchamber);
 
 
 
@@ -462,12 +465,13 @@ function initButton_Callback(hObject, eventdata, handles)
 % hObject    handle to initButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+global tchamber;
+global CPC;
 set(handles.initButton,'Enable','off');
-tchamber = InitT(handles.metricdata.GPIB_tchamber);
+tchamber = InitT(handles.metricdata.GPIB_tchamber)
 PowerOn(tchamber); %Turns on temperature chamber
-Standby(tchamber);
-handles.metricdata.tchamber = tchamber;
-CPC = InitP(handles.metricdata.GPIB_CPC);
-handles.metricdata.CPC = CPC;
+%Standby(tchamber);
+%handles.metricdata.tchamber = tchamber
+CPC = InitP(handles.metricdata.GPIB_CPC)
+%handles.metricdata.CPC = CPC
 set(handles.startButton,'Enable','on');
