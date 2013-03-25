@@ -1,4 +1,4 @@
-function [] = P_startlog(actxobject)
+function [] = P_StartLog(actxobject)
 QNXrealterm = actxobject;
 invoke(QNXrealterm, 'startcapture');
 end

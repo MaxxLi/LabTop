@@ -156,21 +156,21 @@ if (get(handles.ckLog , 'Value') ==1)
     
     switch get(handles.MacroMenu,'value')
         case 2
-            fopenf('Beginning test for Absolute Accuracy over Temperature...\n');
+            disp('Beginning test for Absolute Accuracy over Temperature...\n');
             AAOT(CPC, tchamber, ip, handles);
         case 3
-            fopenf('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis...\n');
+            disp('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis...\n');
             AAOT_TCO_TH(CPC, tchamber, 70, handles);
         case 4
             disp('Beginning test Linearity and Pressure Hysteresis...\n');
             Lin_PH(CPC, tchamber, 25, ip, handles);
         case 5
-            fopenf('Temperature Hysteresys');
+            disp('Temperature Hysteresys');
             Temp_H(CPC, tchamber, ip, 100, handles);
         case 6
-            fopenf('Auto Mode Enabled');
+            disp('Auto Mode Enabled');
         case 7
-            fopenf('Manual Mode Selected');
+            disp('Manual Mode Selected');
             
             switch get(handles.ManualMenu,'value')
                 case 1
@@ -192,21 +192,21 @@ else
     
     switch get(handles.MacroMenu,'value')
         case 2
-            msgbox('Beginning test for Absolute Accuracy over Temperature WITHOUT logging...\n');
+            disp('Beginning test for Absolute Accuracy over Temperature WITHOUT logging...\n');
             AAOT_nolog(CPC,tchamber, 70, ip,handle);
         case 3
-            msgbox('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis WITHOUT logging...\n');
+            disp('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis WITHOUT logging...\n');
             AAOT_TCO_TH_nolog(CPC, tchamber, 70, handles);
         case 4
-            msgbox('Beginning test Linearity and Pressure Hysteresis WITHOUT logging...\n');
+            disp('Beginning test Linearity and Pressure Hysteresis WITHOUT logging...\n');
             Lin_PH_nolog(CPC, tchamber, 25, ip, handles);
         case 5
-            msgbox('Temperature Hysteresys');
+            disp('Temperature Hysteresys');
             Temp_H_nolog(CPC, tchamber, ip, 100, handles);
         case 6
-            msgbox('Auto Mode Enabled');
+            disp('Auto Mode Enabled');
         case 7
-            msgbox('Manual Mode Selected');
+            disp('Manual Mode Selected');
             
             switch get(handles.ManualMenu,'value')
                 case 1
