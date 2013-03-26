@@ -40,7 +40,7 @@ end
 
 
 RT_stoplog(dutobj, 1);
-values = RT_dataparse(0, 'AAOT_TCO_TH.csv.csv');
+values = RT_dataparse(0,0, 'AAOT_TCO_TH.csv');
 pause(1);
 RT_stoplog(dutobj, 2);
 pause(1);

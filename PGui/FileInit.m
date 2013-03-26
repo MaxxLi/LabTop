@@ -6,4 +6,4 @@ catch e
     fclose all;
     clear all;
 end
-dlmwrite(Filename ,[0,0,0], ',');
+dlmwrite(Filename ,[0,0,0,0], ',');
