@@ -13,7 +13,7 @@ refLog = zeros(1,3);
 handles.metricdata.time = SetTemp(CPC, tchamber, 5, handles);
 handles.metricdata.time = plotnpause(2400,10, CPC, tchamber, handles);
 
-dutobj = RT _init(ip);
+dutobj = RT_init(ip);
 RT_log(dutobj);
 RT_startlog(dutobj);
 
@@ -28,6 +28,7 @@ for i= 0:600:7200
     handles.metricdata.time = plotnpause(600,10, CPC, tchamber, handles);
 end
 
+handles.metricdata.time = plotnpause(1200,10, CPC, tchamber, handles);
 handles.metricdata.time = SetTemp(CPC, tchamber, 5, handles);
 
 for i= 0:600:9000
