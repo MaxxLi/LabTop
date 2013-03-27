@@ -160,7 +160,7 @@ if (get(handles.ckLog , 'Value') ==1)
             AAOT(CPC, tchamber, ip, handles);
         case 3
             disp('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis...\n');
-            AAOT_TCO_TH(CPC, tchamber, 70, handles);
+            AAOT_TCO_TH(CPC, tchamber, 100,ip, handles);
         case 4
             disp('Beginning test Linearity and Pressure Hysteresis...\n');
             Lin_PH(CPC, tchamber, 25, ip, handles);

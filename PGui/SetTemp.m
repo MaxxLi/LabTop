@@ -1,4 +1,4 @@
-function [time] = SetTemp( CPC, tchamber, settemp, handles )
+function [time] = SetTemp( CPC, tchamber, settemp, handles, filename)
     %Sets the temperature '01,TEMP,S ',num2str(settemp), ' \n'
     
     fprintf(tchamber, ['01,TEMP,S ',num2str(settemp), ' \n'])   
@@ -7,9 +7,9 @@ function [time] = SetTemp( CPC, tchamber, settemp, handles )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%TEMPCHECK%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     temp = zeros(1,5);
-	
+    reflog = zeros(1,3);
+	counter = 0;
 	while(1)
-
 		holder = GetPressure(CPC);
         holdert = GetTemp(tchamber);
         set(handles.presText,'String',num2str(holder));
@@ -26,6 +26,16 @@ function [time] = SetTemp( CPC, tchamber, settemp, handles )
 			break;
 		end
 		pause(1);
+        
+        if counter == 60
+            refLog(1,1) = GetPressure(CPC);
+            refLog(1,2) = GetTemp(tchamber);
+            refLog(1,3) = handles.metricdata.time; 
+            dlmwrite(filename, refLog , '-append');
+            counter = 0;
+        else
+            counter = counter + 1;
+        end
         handles.metricdata.time = handles.metricdata.time + 1;
     end
     
