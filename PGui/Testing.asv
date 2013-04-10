@@ -1,8 +1,0 @@
-dutobj = RT_init('169.254.170.201');
-RT_log(dutobj);
-RT_startlog(dutobj);
-SetTemp(
-pause(10);
-RT_stoplog(dutobj,1);
-FileInit('new');
-RT_dataparse(1, 'new');

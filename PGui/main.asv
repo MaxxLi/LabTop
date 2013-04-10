@@ -55,8 +55,6 @@ function main_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for main
 handles.output = hObject;
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Setting the global variables and packaging them in handles
 % This will allow all my subroutines to use these variables
 % Since handles passed by all the subroutines
@@ -69,7 +67,7 @@ handles.metricdata.GPIB_tchamber= 1;
 handles.metricdata.ip= 0;
 handles.metricdata.isLog= 0;
 handles.metricdata.time= 0;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 % Update handles structure
@@ -98,15 +96,7 @@ function MacroMenu_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns MacroMenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from MacroMenu
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Mainly for UI features where specific blocks are enabled using this
-% function
 MacroEnable(hObject, eventdata, handles);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
@@ -123,18 +113,12 @@ function GPIB_Temp_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of GPIB_Temp as text
 %        str2double(get(hObject,'String')) returns contents of GPIB_Temp as a double
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Check if the entered value for GPIB is a number
 if (str_isnumeric(get(hObject,'String')))
     handles.metricdata.GPIB_tchamber = str2double(get(hObject,'String'));
 else
     msgbox('Please input a number','Error','error');
     
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     
 
@@ -164,22 +148,15 @@ function startButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 %handles.metricdata.time = plotnpause(5,1,CPC,tchamber, handles);
 %handles.metricdata.time = plotnpause(10,1,CPC,tchamber, handles);
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%CPC and tchamber needs to be a global variable for it to be passed and
-%initialized in other sequences 
-
 global tchamber;
 global CPC;
 
-%Parsing the ip txt field
+
+
 ip = get(handles.DeviceIP, 'String');
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%PROFILE SELECTION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-if (get(handles.ckLog , 'Value') ==1)    
+if (get(handles.ckLog , 'Value') ==1)
+    
     switch get(handles.MacroMenu,'value')
         case 2
             disp('Beginning test for Absolute Accuracy over Temperature...\n');
@@ -214,8 +191,8 @@ if (get(handles.ckLog , 'Value') ==1)
     end
     
     
+else
     
-else    
     
     switch get(handles.MacroMenu,'value')
         case 2
@@ -251,7 +228,7 @@ else
     
         
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 % --- Executes on button press in resetButton.
@@ -259,19 +236,15 @@ function resetButton_Callback(hObject, eventdata, handles)
 % hObject    handle to resetButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%resets all the connections and objects
 global tchamber;
 global CPC;
 
+set(handles.initButton,'Enable','on');
 PowerOff(tchamber);
 CleanUp(CPC);
 CleanUp(tchamber);
-set(handles.initButton,'Enable','on');
 set(handles.startButton,'Enable','off');
 set(handles.resetButton,'Enable','off');
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
@@ -329,9 +302,6 @@ function ManualMenu_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns ManualMenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from ManualMenu
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Mainly for UI purposes 
 ManualEnable(hObject, eventdata, handles);
 switch (get(hObject,'value'))
     case 1
@@ -347,7 +317,7 @@ switch (get(hObject,'value'))
         handles.metricdata.case = 10;
         %msgbox('please input temperature');
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % --- Executes during object creation, after setting all properties.
 function GPIB_Temp_CreateFcn(hObject, eventdata, handles)
@@ -483,9 +453,6 @@ function ckLog_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % Hint: get(hObject,'Value') returns toggle state of ckLog
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Mainly for UI purposes
 handles.metricdata.isLog = get(hObject, 'Value');
 if handles.metricdata.isLog == 1
     set(handles.DeviceIP,'Enable','on');
@@ -496,16 +463,13 @@ else
     set(handles.GPIB_CPC,'Enable','off');
     set(handles.GPIB_Temp,'Enable','off');
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % --- Executes on button press in initButton.
 function initButton_Callback(hObject, eventdata, handles)
 % hObject    handle to initButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Initialization of all the GPIB objects
 global tchamber;
 global CPC;
 set(handles.initButton,'Enable','off');
@@ -517,5 +481,3 @@ CPC = InitP(handles.metricdata.GPIB_CPC)
 %handles.metricdata.CPC = CPC
 set(handles.startButton,'Enable','on');
 set(handles.resetButton,'Enable','on');
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

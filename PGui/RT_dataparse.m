@@ -7,18 +7,10 @@ catch e
     fclose all;
     clear all;
 end
-% try
-%     fopen('BB10_mag.csv');
-% catch e
-%     errordlg('Error opening BB10_mag CSV file for plotting.');
-%     fclose all;
-%     clear all;
-% end
 
 opsize = size(file);
 hdgcounter = 0;
 outputdata = zeros(opsize(1,1), 4);
-% finaloutput = zeros(opsize(1,1),9);
 for i=1:opsize(1,1)
     tmpstr = char(file(i,1));
     line = strsplit(tmpstr, ' ');

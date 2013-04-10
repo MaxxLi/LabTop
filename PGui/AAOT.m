@@ -1,14 +1,26 @@
 function [time] = AAOT(CPC, tchamber, ip, handles)
-
+%CPC - Presure chamber GPIB object
+%tchamber - Temp chamber GPIB object
+% ip - ip address for the device
+% handles - Global GUI object
+% This test will because ramping temperature from 5 to 65 degress with 5 degree
+% steps. At each step it will ramp the temperature from 70 to 125 kPa in 5 kPa
+% steps
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Initializing all the files needed for the test
 FileInit('BB10_AAOT_ref.csv');
 FileInit('BB10_AAOT.csv');
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Initializing RealTerm object
 dutobj = RT_init(ip);
 RT_log(dutobj);
-
 refLog = zeros(1,4);    
 tempID = 0;
 handles.metricdata.time = SetPressure(CPC, tchamber, 70, handles);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for t = 5:5:65
     tempID = tempID + 1;
     handles.metricdata.time = SetTemp(CPC, tchamber, t, handles);

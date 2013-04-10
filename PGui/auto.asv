@@ -14,12 +14,10 @@ FileInit('AAOT_TCO_TH_ref.csv');
 FileInit('BB10_AAOT_ref.csv');
 FileInit('BB10_AAOT.csv');
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%LINEARITY TEST %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Setting to the Test initial conditions (25 degrees) (70 kPa)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 disp(['Setting Temperature to ', 25, ' degrees...']);
 handles.metricdata.time = SetTemp(CPC, tchamber, 25, handles,'scrap.csv');
-handles.metricdata.time = SetPressure(CPC, tchamber, 70, handles);
 plotnpause(7200,10,CPC,tchamber,handles);
 
 dutobj = RT_init(ip);
@@ -71,7 +69,7 @@ pause(1);
 RT_stoplog(dutobj, 2);
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%AAOT+TCO+TH%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 FileInit('scrap.csv'); %reinit because the scrap file may be too big
@@ -102,7 +100,7 @@ RT_stoplog(dutobj, 1);
 values = RT_dataparse(0,0, 'AAOT_TCO_TH.csv');
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%AAOT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 pause(2);
 
 
