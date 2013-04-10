@@ -20,9 +20,9 @@ function [time] = SetPressure( CPC, tchamber, pressure, handles )
                 presArray(i+1)= presArray(i);
             end
             presArray(1) = holder;
-            presArray
-            mean(presArray)
-            pressure
+%             presArray
+%             mean(presArray)
+%             pressure
             
 			if ((abs( mean(presArray) - pressure)) <= 0.1)
 				break;
@@ -32,7 +32,8 @@ function [time] = SetPressure( CPC, tchamber, pressure, handles )
             handles.metricdata.time = handles.metricdata.time + 1;
     end
     
-    time = handles.metricdata.time;
+    pause(2);
+    time = handles.metricdata.time + 2;
 
 
 end

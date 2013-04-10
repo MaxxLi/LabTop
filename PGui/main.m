@@ -169,6 +169,7 @@ if (get(handles.ckLog , 'Value') ==1)
             Temp_H(CPC, tchamber, ip, 100, handles);
         case 6
             disp('Auto Mode Enabled');
+            auto(CPC, tchamber, 100,ip, handles);
         case 7
             disp('Manual Mode Selected');
             

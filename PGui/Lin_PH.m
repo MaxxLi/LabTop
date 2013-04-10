@@ -2,9 +2,12 @@ function [] = Lin_PH(CPC, tchamber,temperature, ip, handles)
 
 FileInit('BB10_Lin_PH.csv');
 FileInit('BB10_Lin_PH_ref.csv');
+FileInit('scrap.csv');
+
 
 disp(['Setting Temperature to ', num2str(temperature), ' degrees...']);
-handles.metricdata.time = SetTemp(CPC, tchamber, temperature, handles);
+handles.metricdata.time = SetTemp(CPC, tchamber, temperature, handles,'scrap.csv');
+plotnpause(7200,10,CPC,tchamber,handles);
 
 dutobj = RT_init(ip);
 RT_log(dutobj);
