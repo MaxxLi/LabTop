@@ -1,4 +1,12 @@
-function [] = auto(CPC, tchamber, pressure, ip, handles)
+function [time] = auto(CPC, tchamber, pressure, ip, handles)
+
+
+%CPC - Presure chamber GPIB object
+%tchamber - Temp chamber GPIB object
+% pressure - pressure to be set for this test
+% ip - ip address for the device
+% handles - Global GUI object
+
 
 % This is a combination of the other 3 test portfolios
 % It will run Linearity Test, TCO+TH, and AAOT Test in sequencial order
@@ -20,7 +28,7 @@ FileInit('BB10_AAOT.csv');
 disp(['Setting Temperature to ', 25, ' degrees...']);
 handles.metricdata.time = SetTemp(CPC, tchamber, 25, handles,'scrap.csv');
 handles.metricdata.time = SetPressure(CPC, tchamber, 70, handles);
-plotnpause(7200,10,CPC,tchamber,handles);
+handles.metricdata.time = plotnpause(3600,10,CPC,tchamber,handles);
 
 dutobj = RT_init(ip);
 RT_log(dutobj);

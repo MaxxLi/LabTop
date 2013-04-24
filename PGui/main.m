@@ -191,23 +191,16 @@ if (get(handles.ckLog , 'Value') ==1)
             disp('Beginning test Linearity and Pressure Hysteresis...\n');
             Lin_PH(CPC, tchamber, 25, ip, handles);
         case 5
-            disp('Temperature Hysteresys');
-            Temp_H(CPC, tchamber, ip, 100, handles);
-        case 6
             disp('Auto Mode Enabled');
             auto(CPC, tchamber, 100,ip, handles);
-        case 7
+        case 6
             disp('Manual Mode Selected');
             
             switch get(handles.ManualMenu,'value')
                 case 1
-                    TempSweep(CPC, tchamber, str2double(get(txtConstPres, 'String')), ip, handles)
-                case 2
-                    Temp_H(CPC, tchamber, str2double(get(txtConstPres, 'String')), ip, handles)
-                case 3
-                    PresSweep(CPC, tchamber,str2double(get(txtConstTemp, 'String')), ip, handles);
+                    AAOT_TCO_TH(CPC, tchamber, str2double(get(txtConstPres, 'String')), ip, handles)
                 otherwise
-                    Pres_H(CPC, tchamber,str2double(get(txtConstTemp, 'String')), ip, handles);
+                    Lin_PH(CPC, tchamber,str2double(get(txtConstTemp, 'String')), ip, handles);
             end
         otherwise
             msgbox('Please Select a Mode');       
@@ -237,13 +230,9 @@ else
             
             switch get(handles.ManualMenu,'value')
                 case 1
-                    TempSweep_nolog(CPC, tchamber, str2double(get(txtConstPres, 'String')), ip, handles)
-                case 2
-                    Temp_H_nolog(CPC, tchamber, str2double(get(txtConstPres, 'String')), ip, handles)
-                case 3
-                    PresSweep_nolog(CPC, tchamber,str2double(get(txtConstTemp, 'String')), ip, handles);
+                    AAOT_TCO_TH_nolog(CPC, tchamber, str2double(get(txtConstPres, 'String')), ip, handles)
                 otherwise
-                    Pres_H_nolog(CPC, tchamber,str2double(get(txtConstTemp, 'String')), ip, handles);
+                    Lin_PH_nolog(CPC, tchamber,str2double(get(txtConstTemp, 'String')), ip, handles);
             end
         otherwise
             msgbox('Please Select a Mode');       

@@ -7,7 +7,7 @@ FileInit('scrap.csv');
 
 disp(['Setting Temperature to ', num2str(temperature), ' degrees...']);
 handles.metricdata.time = SetTemp(CPC, tchamber, temperature, handles,'scrap.csv');
-plotnpause(7200,10,CPC,tchamber,handles);
+handles.metricdata.time = plotnpause(3600,10,CPC,tchamber,handles);
 
 dutobj = RT_init(ip);
 RT_log(dutobj);
