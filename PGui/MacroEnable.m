@@ -1,6 +1,6 @@
 function [] = MacroEnable(hObject, eventdata, handles)
 switch get(hObject,'value')
-    case 7
+    case 6
         set(handles.ManualMenu,'Enable','on');
         set(handles.txtConstPres,'Enable','on');
         set(handles.txtConstTemp,'Enable','off')
