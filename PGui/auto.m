@@ -1,4 +1,4 @@
-function [time] = auto(CPC, tchamber, pressure, ip, handles)
+function [time] = auto(CPC, tchamber, pressure, ip, handles, skipWait)
 
 
 %CPC - Presure chamber GPIB object
@@ -28,7 +28,9 @@ FileInit('BB10_AAOT.csv');
 disp(['Setting Temperature to ', 25, ' degrees...']);
 handles.metricdata.time = SetTemp(CPC, tchamber, 25, handles,'scrap.csv');
 handles.metricdata.time = SetPressure(CPC, tchamber, 70, handles);
-handles.metricdata.time = plotnpause(3600,10,CPC,tchamber,handles);
+if skipWait == 0
+       handles.metricdata.time = plotnpause(3600,10,CPC,tchamber,handles);
+end
 
 dutobj = RT_init(ip);
 RT_log(dutobj);

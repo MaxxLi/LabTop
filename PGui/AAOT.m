@@ -1,4 +1,4 @@
-function [time] = AAOT(CPC, tchamber, ip, handles)
+function [time] = AAOT(CPC, tchamber, ip, handles, skipWait)
 %CPC - Presure chamber GPIB object
 %tchamber - Temp chamber GPIB object
 % ip - ip address for the device
@@ -24,7 +24,10 @@ handles.metricdata.time = SetPressure(CPC, tchamber, 70, handles);
 for t = 5:5:65
     tempID = tempID + 1;
     handles.metricdata.time = SetTemp(CPC, tchamber, t, handles);
-    handles.metricdata.time = plotnpause(2400,10, CPC, tchamber, handles);
+    if skipWait == 0
+        handles.metricdata.time = plotnpause(2400,10, CPC, tchamber, handles);
+    end
+    skipWait = 0;
     
     presID = 0;
 	
@@ -53,3 +56,4 @@ time = handles.metricdata.time;
 pause(1);
 RT_stoplog(dutobj, 2); 
 PowerOff(tchamber);
+skipWait = 1;

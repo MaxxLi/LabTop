@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 10-Apr-2013 13:59:20
+% Last Modified by GUIDE v2.5 25-Apr-2013 16:25:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,8 +72,11 @@ handles.metricdata.time= 0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+
+
 % Update handles structure
 guidata(hObject, handles);
+
 
 % UIWAIT makes main wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -88,6 +91,8 @@ function varargout = main_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
+
+
 
 
 % --- Executes on selection change in MacroMenu.
@@ -175,33 +180,32 @@ global CPC;
 
 %Parsing the ip txt field
 ip = get(handles.DeviceIP, 'String');
-
-
+skipWait = get(handles.isSkip, 'Value');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%PROFILE SELECTION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if (get(handles.ckLog , 'Value') ==1)    
     switch get(handles.MacroMenu,'value')
         case 2
+            cla(handles.TempAxes);
+            cla(handles.PressureAxes);
             disp('Beginning test for Absolute Accuracy over Temperature...\n');
-            AAOT(CPC, tchamber, ip, handles);
+            AAOT(CPC, tchamber, ip, handles,skipWait);
         case 3
+            cla(handles.TempAxes);
+            cla(handles.PressureAxes);
             disp('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis...\n');
-            AAOT_TCO_TH(CPC, tchamber, 100,ip, handles);
+            AAOT_TCO_TH(CPC, tchamber, 100,ip, handles,skipWait);
         case 4
+            cla(handles.TempAxes);
+            cla(handles.PressureAxes);
             disp('Beginning test Linearity and Pressure Hysteresis...\n');
-            Lin_PH(CPC, tchamber, 25, ip, handles);
+            Lin_PH(CPC, tchamber, 25, ip, handles,skipWait);
         case 5
-            disp('Auto Mode Enabled');
-            auto(CPC, tchamber, 100,ip, handles);
-        case 6
-            disp('Manual Mode Selected');
-            
-            switch get(handles.ManualMenu,'value')
-                case 1
-                    AAOT_TCO_TH(CPC, tchamber, str2double(get(txtConstPres, 'String')), ip, handles)
-                otherwise
-                    Lin_PH(CPC, tchamber,str2double(get(txtConstTemp, 'String')), ip, handles);
-            end
+            cla(handles.TempAxes);
+            cla(handles.PressureAxes);
+            disp('Beginning whole test suite');
+            auto(CPC, tchamber, 100,ip, handles,skipWait);
+       
         otherwise
             msgbox('Please Select a Mode');       
     end
@@ -212,28 +216,25 @@ else
     
     switch get(handles.MacroMenu,'value')
         case 2
+            cla(handles.TempAxes);
+            cla(handles.PressureAxes);
             disp('Beginning test for Absolute Accuracy over Temperature WITHOUT logging...\n');
-            AAOT_nolog(CPC,tchamber, 70, ip,handle);
+            AAOT_nolog(CPC,tchamber, 70, ip,handle,skipWait);
         case 3
+            cla(handles.TempAxes);
+            cla(handles.PressureAxes);
             disp('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis WITHOUT logging...\n');
-            AAOT_TCO_TH_nolog(CPC, tchamber, 70, handles);
+            AAOT_TCO_TH_nolog(CPC, tchamber, 70, handles,skipWait);
         case 4
+            cla(handles.TempAxes);
+            cla(handles.PressureAxes);
             disp('Beginning test Linearity and Pressure Hysteresis WITHOUT logging...\n');
-            Lin_PH_nolog(CPC, tchamber, 25, ip, handles);
+            Lin_PH_nolog(CPC, tchamber, 25, ip, handles,skipWait);
         case 5
-            disp('Temperature Hysteresys');
-            Temp_H_nolog(CPC, tchamber, ip, 100, handles);
-        case 6
-            disp('Auto Mode Enabled');
-        case 7
-            disp('Manual Mode Selected');
-            
-            switch get(handles.ManualMenu,'value')
-                case 1
-                    AAOT_TCO_TH_nolog(CPC, tchamber, str2double(get(txtConstPres, 'String')), ip, handles)
-                otherwise
-                    Lin_PH_nolog(CPC, tchamber,str2double(get(txtConstTemp, 'String')), ip, handles);
-            end
+            cla(handles.TempAxes);
+            cla(handles.PressureAxes);
+            disp('beginning whole test suite');
+        
         otherwise
             msgbox('Please Select a Mode');       
     end
@@ -259,7 +260,7 @@ CleanUp(CPC);
 CleanUp(tchamber);
 set(handles.initButton,'Enable','on');
 set(handles.startButton,'Enable','off');
-set(handles.resetButton,'Enable','off');
+set(handles.ManualButton,'Enable','off');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -310,33 +311,6 @@ else
 end
 
 
-% --- Executes on selection change in ManualMenu.
-function ManualMenu_Callback(hObject, eventdata, handles)
-% hObject    handle to ManualMenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns ManualMenu contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from ManualMenu
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Mainly for UI purposes 
-ManualEnable(hObject, eventdata, handles);
-switch (get(hObject,'value'))
-    case 1
-        handles.metricdata.case = 7;
-        %msgbox('please input pressure');
-    case 2
-        handles.metricdata.case = 8;
-        %msgbox('please input pressure');
-    case 3
-        handles.metricdata.case = 9;
-        %msgbox('please input temperature');
-    case 4
-        handles.metricdata.case = 10;
-        %msgbox('please input temperature');
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % --- Executes during object creation, after setting all properties.
 function GPIB_Temp_CreateFcn(hObject, eventdata, handles)
@@ -384,6 +358,7 @@ function TempAxes_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: place code in OpeningFcn to populate TempAxes
+axis([0,100,0,80]);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -398,19 +373,6 @@ function resetButton_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to resetButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
-
-% --- Executes during object creation, after setting all properties.
-function ManualMenu_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to ManualMenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -497,14 +459,65 @@ function initButton_Callback(hObject, eventdata, handles)
 % Initialization of all the GPIB objects
 global tchamber;
 global CPC;
+
+handles.metricdata.ip = getIP;
+set(handles.DeviceIP,'String',handles.metricdata.ip);
+obj = RT_init(handles.metricdata.ip);
+RT_log(obj);
+RT_startlog(obj);
+PutString(obj, ['cat /pps/system/nvram/deviceinfo | grep PIN:: | sed -e ''s/PIN::0x//g''' char(13)]);
+RT_stoplog(obj);
+pause(0.5)
 set(handles.initButton,'Enable','off');
-tchamber = InitT(handles.metricdata.GPIB_tchamber)
+tchamber = InitT(handles.metricdata.GPIB_tchamber);
 PowerOn(tchamber); %Turns on temperature chamber
 %Standby(tchamber);
 %handles.metricdata.tchamber = tchamber
-CPC = InitP(handles.metricdata.GPIB_CPC)
+CPC = InitP(handles.metricdata.GPIB_CPC);
 %handles.metricdata.CPC = CPC
 set(handles.startButton,'Enable','on');
-set(handles.resetButton,'Enable','on');
+set(handles.ManualButton,'Enable','on');
+set(handles.ManualButton,'String','Set');
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% --- Executes on button press in ManualButton.
+function ManualButton_Callback(hObject, eventdata, handles)
+% hObject    handle to ManualButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+FileInit('scrap.csv');
+SetTemp(CPC,tchamber,str2double(get(txtConstTemp, 'String')),handles,'scrap.csv');
+SetPressure(CPC,tchamber,str2double(get(txtConstPres, 'String')),handles,'scrap.csv');
+
+
+
+
+% --- Executes on button press in pushbutton5.
+function pushbutton5_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in isSkip.
+function isSkip_Callback(hObject, eventdata, handles)
+% hObject    handle to isSkip (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of isSkip
+
+
+
+% --- Executes during object creation, after setting all properties.
+function PressureAxes_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PressureAxes (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate PressureAxes
+axis([0,100,60,130]);
+

@@ -1,4 +1,4 @@
-function [] = AAOT_TCO_TH(CPC, tchamber, pressure, ip, handles)
+function [] = AAOT_TCO_TH(CPC, tchamber, pressure, ip, handles, skipWait)
 
 %CPC - Presure chamber GPIB object
 %tchamber - Temp chamber GPIB object
@@ -21,7 +21,10 @@ FileInit('AAOT_TCO_TH_ref.csv');
 handles.metricdata.time = SetPressure(CPC, tchamber, pressure, handles);
 
 handles.metricdata.time = SetTemp(CPC, tchamber, 5, handles, 'AAOT_TCO_TH_ref.csv');
-handles.metricdata.time = plotnpause(3600,10, CPC, tchamber, handles);
+
+if skipWait == 0
+    handles.metricdata.time = plotnpause(3600,10, CPC, tchamber, handles);
+end
 
 dutobj = RT_init(ip);
 pause(1);

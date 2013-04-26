@@ -1,9 +1,11 @@
-function [] = Lin_PH(CPC, tchamber,temperature, ip, handles)
+function [] = Lin_PH(CPC, tchamber,temperature, ip, handles, skipWait)
 
 
 disp(['Setting Temperature to ', num2str(temperature), ' degrees...']);
 handles.metricdata.time = SetTemp(CPC, tchamber, temperature, handles,'scrap.csv');
-handles.metricdata.time = plotnpause(3600,10,CPC,tchamber,handles);
+if skipWait == 0
+    handles.metricdata.time = plotnpause(3600,10,CPC,tchamber,handles);
+end
 
 
 disp('Beginning Pressure Steps.');
