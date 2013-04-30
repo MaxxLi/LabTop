@@ -1,6 +1,7 @@
 function [] = FileInit(Filename)
+standby = Filename;
 try
-    fopen(Filename);
+    fopen(standby);
 catch e
     errordlg('Error creating ' + Filename);
     fclose all;

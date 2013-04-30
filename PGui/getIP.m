@@ -1,4 +1,4 @@
-function [ip] = getIP()
+function [ip] = GetIP()
 
 [~,input] = system('ipconfig /all');
 delim = input(1);

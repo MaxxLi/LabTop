@@ -1,0 +1,3 @@
+# cat /pps/system/nvram/deviceinfo | grep PIN:: | sed -e 's/PIN::0x//g'
+2AC38BE3
+# 

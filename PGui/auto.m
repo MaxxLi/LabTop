@@ -1,3 +1,4 @@
+
 function [time] = auto(CPC, tchamber, pressure, ip, handles, skipWait)
 
 
@@ -13,19 +14,27 @@ function [time] = auto(CPC, tchamber, pressure, ip, handles, skipWait)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Initializing all the files needed for the test
+ModelNumber = get(handles.ModelNumber,'String');
+pin = get(handles.DeviceName,'String');
+FILE_LIN = [ModelNumber,'_',pin,'_Lin_PH.csv'];
+FILE_LIN_ref = [ModelNumber,'_',pin,'_Lin_PH_ref.csv'];
+FILE_TCO = [ModelNumber,'_',pin,'_TCO_TH.csv'];
+FILE_TCO_ref = [ModelNumber,'_',pin,'_TCO_TH_ref.csv'];
+FILE_AAOT = [ModelNumber,'_',pin,'_AAOT.csv'];
+FILE_AAOT_ref = [ModelNumber,'_',pin,'_AAOT_ref.csv'];
 
-FileInit('BB10_Lin_PH.csv');
-FileInit('BB10_Lin_PH_ref.csv');
+FileInit(FILE_LIN);
+FileInit(FILE_LIN_ref);
 FileInit('scrap.csv');
-FileInit('AAOT_TCO_TH.csv');
-FileInit('AAOT_TCO_TH_ref.csv');
-FileInit('BB10_AAOT_ref.csv');
-FileInit('BB10_AAOT.csv');
+FileInit(FILE_TCO);
+FileInit(FILE_TCO_ref);
+FileInit(FILE_AAOT_ref);
+FileInit(FILE_AAOT);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%LINEARITY TEST %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Setting to the Test initial conditions (25 degrees) (70 kPa)
 
-disp(['Setting Temperature to ', 25, ' degrees...']);
+disp(['Setting Temperature to ', '25', ' degrees...']);
 handles.metricdata.time = SetTemp(CPC, tchamber, 25, handles,'scrap.csv');
 handles.metricdata.time = SetPressure(CPC, tchamber, 70, handles);
 if skipWait == 0
@@ -46,14 +55,14 @@ for p = 70:1:120
     refLog(1,2) = GetTemp(tchamber);
     refLog(1,3) = presID;
 	refLog(1,4) = 1;
-    dlmwrite('BB10_Lin_PH_ref.csv', refLog , '-append');   
+    dlmwrite(FILE_LIN_ref, refLog , '-append');   
     pause(0.5);
 	disp('Data Streaming...');
-    RT_startlog(dutobj);
+    RT_StartLog(dutobj);
     handles.metricdata.time = plotnpause(5,1, CPC, tchamber, handles);
     RT_stoplog(dutobj, 1);
 	disp('Streaming Stopped.');
-    values = RT_dataparse(1,presID,'BB10_Lin_PH.csv');
+    values = RT_dataparse(1,presID,FILE_LIN);
 end
 
 
@@ -66,14 +75,14 @@ for p = 120:-1:70
     refLog(1,2) = GetTemp(tchamber);
     refLog(1,3) = presID; 
 	refLog(1,4) = 0;	
-    dlmwrite('BB10_Lin_PH_ref.csv', refLog , '-append');   
+    dlmwrite(FILE_LIN_ref, refLog , '-append');   
     pause(0.5);
 	disp('Data Streaming...');
-    RT_startlog(dutobj);
+    RT_StartLog(dutobj);
     handles.metricdata.time = plotnpause(5,1, CPC, tchamber, handles);
     RT_stoplog(dutobj, 1);
 	disp('Streaming Stopped.');
-    values = RT_dataparse(0,presID,'BB10_Lin_PH.csv');
+    values = RT_dataparse(0,presID,FILE_LIN);
 end
 
 
@@ -97,19 +106,19 @@ pause(1);
 RT_log(dutobj);
 pause(1);
 
-RT_startlog(dutobj);
-handles.metricdata.time = SetTemp(CPC, tchamber, 65, handles,'AAOT_TCO_TH_ref.csv' );
+RT_StartLog(dutobj);
+handles.metricdata.time = SetTemp(CPC, tchamber, 65, handles,FILE_TCO_ref );
 handles.metricdata.time = plotnpause(3600,10, CPC, tchamber, handles);
 RT_stoplog(dutobj, 1);
-values = RT_dataparse(0,0, 'AAOT_TCO_TH.csv');
+values = RT_dataparse(0,0, FILE_TCO);
 pause(1)
 
 
-RT_startlog(dutobj);
-handles.metricdata.time = SetTemp(CPC, tchamber, 5, handles,'AAOT_TCO_TH_ref.csv');
+RT_StartLog(dutobj);
+handles.metricdata.time = SetTemp(CPC, tchamber, 5, handles,FILE_TCO_ref);
 handles.metricdata.time = plotnpause(3600,10, CPC, tchamber, handles);
 RT_stoplog(dutobj, 1);
-values = RT_dataparse(0,0, 'AAOT_TCO_TH.csv');
+values = RT_dataparse(0,0, FILE_TCO);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%AAOT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -130,16 +139,16 @@ for t = 5:5:65
 	for p = 70:5:125
 		presID = presID + 1;
 		handles.metricdata.time = SetPressure(CPC, tchamber, p, handles);
-		RT_startlog(dutobj);
+		RT_StartLog(dutobj);
 		handles.metricdata.time = plotnpause(10,1, CPC, tchamber, handles);
 		RT_stoplog(dutobj, 1);
-		values = RT_dataparse(tempID,presID,'BB10_AAOT.csv');
+		values = RT_dataparse(tempID,presID,FILE_AAOT);
 		
 		refLog(1,1) = GetPressure(CPC);
 		refLog(1,2) = GetTemp(tchamber);
 		refLog(1,3) = tempID;
-		reflog(1,4) = presID;
-		dlmwrite('BB10_AAOT_ref.csv', refLog , '-append');		
+		refLog(1,4) = presID;
+		dlmwrite(FILE_AAOT_ref, refLog , '-append');		
 
 	end
 	pause(0.5);
@@ -148,9 +157,19 @@ for t = 5:5:65
     
 end
 
-handles.metricdata.time = SetTemp(CPC, tchamber, 5, handles,'scrap.csv');
+%handles.metricdata.time = SetTemp(CPC, tchamber, 5, handles,'scrap.csv');
 time = handles.metricdata.time;
 pause(1);
 RT_stoplog(dutobj, 2); 
+PowerOff(tchamber);
+
+dirname = [ModelNumber,'_',pin,'_',date];
+mkdir(dirname);
+movefile(FILE_LIN, dirname);
+movefile(FILE_LIN_ref, dirname);
+movefile(FILE_TCO, dirname);
+movefile(FILE_TCO_ref, dirname);
+movefile(FILE_AAOT_ref, dirname);
+movefile(FILE_AAOT, dirname);
 
   

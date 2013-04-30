@@ -8,8 +8,14 @@ function [time] = AAOT(CPC, tchamber, ip, handles, skipWait)
 % steps
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Initializing all the files needed for the test
-FileInit('BB10_AAOT_ref.csv');
-FileInit('BB10_AAOT.csv');
+ModelNumber = get(handles.ModelNumber,'String');
+pin = get(handles.DeviceName,'String');
+
+FILE_AAOT = [ModelNumber,'_',pin,'_AAOT.csv'];
+FILE_AAOT_ref = [ModelNumber,'_',pin,'_AAOT_ref.csv'];
+FileInit(FILE_AAOT_ref);
+FileInit(FILE_AAOT);
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,16 +40,16 @@ for t = 5:5:65
 	for p = 70:5:125
 		presID = presID + 1;
 		handles.metricdata.time = SetPressure(CPC, tchamber, p, handles);
-		RT_startlog(dutobj);
+		RT_StartLog(dutobj);
 		handles.metricdata.time = plotnpause(10,1, CPC, tchamber, handles);
 		RT_stoplog(dutobj, 1);
-		values = RT_dataparse(tempID,presID,'BB10_AAOT.csv');
+		values = RT_dataparse(tempID,presID,FILE_AAOT);
 		
 		refLog(1,1) = GetPressure(CPC);
 		refLog(1,2) = GetTemp(tchamber);
 		refLog(1,3) = tempID;
-		reflog(1,4) = presID;
-		dlmwrite('BB10_AAOT_ref.csv', refLog , '-append');		
+		refLog(1,4) = presID;
+		dlmwrite(FILE_AAOT_ref, refLog , '-append');		
 
 	end
 	pause(0.5);
@@ -54,6 +60,9 @@ end
 
 time = handles.metricdata.time;
 pause(1);
-RT_stoplog(dutobj, 2); 
+RT_stoplog(dutobj, 2);
 PowerOff(tchamber);
 skipWait = 1;
+
+
+

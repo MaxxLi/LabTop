@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 25-Apr-2013 16:25:05
+% Last Modified by GUIDE v2.5 26-Apr-2013 13:45:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -179,67 +179,75 @@ global tchamber;
 global CPC;
 
 %Parsing the ip txt field
+set(handles.DeviceModel,'String',get(handles.ModelNumber,'String'));
 ip = get(handles.DeviceIP, 'String');
 skipWait = get(handles.isSkip, 'Value');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%PROFILE SELECTION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if (get(handles.ckLog , 'Value') ==1)    
-    switch get(handles.MacroMenu,'value')
-        case 2
-            cla(handles.TempAxes);
-            cla(handles.PressureAxes);
-            disp('Beginning test for Absolute Accuracy over Temperature...\n');
-            AAOT(CPC, tchamber, ip, handles,skipWait);
-        case 3
-            cla(handles.TempAxes);
-            cla(handles.PressureAxes);
-            disp('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis...\n');
-            AAOT_TCO_TH(CPC, tchamber, 100,ip, handles,skipWait);
-        case 4
-            cla(handles.TempAxes);
-            cla(handles.PressureAxes);
-            disp('Beginning test Linearity and Pressure Hysteresis...\n');
-            Lin_PH(CPC, tchamber, 25, ip, handles,skipWait);
-        case 5
-            cla(handles.TempAxes);
-            cla(handles.PressureAxes);
-            disp('Beginning whole test suite');
-            auto(CPC, tchamber, 100,ip, handles,skipWait);
-       
-        otherwise
-            msgbox('Please Select a Mode');       
+    
+if (strcmp(get(handles.ModelNumber,'String'),'Device Model'))
+    msgbox('Please Enter Device Model Number before starting');
+    
+else
+
+    if (get(handles.ckLog , 'Value') ==1)    
+        switch get(handles.MacroMenu,'value')
+            case 2
+                cla(handles.TempAxes);
+                cla(handles.PressureAxes);
+                disp('Beginning test for Absolute Accuracy over Temperature...\n');
+                AAOT(CPC, tchamber, ip, handles,skipWait);
+            case 3
+                cla(handles.TempAxes);
+                cla(handles.PressureAxes);
+                disp('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis...\n');
+                AAOT_TCO_TH(CPC, tchamber, 100,ip, handles,skipWait);
+            case 4
+                cla(handles.TempAxes);
+                cla(handles.PressureAxes);
+                disp('Beginning test Linearity and Pressure Hysteresis...\n');
+                Lin_PH(CPC, tchamber, 25, ip, handles,skipWait);
+            case 5
+                cla(handles.TempAxes);
+                cla(handles.PressureAxes);
+                disp('Beginning whole test suite');
+                auto(CPC, tchamber, 100,ip, handles,skipWait);
+
+            otherwise
+                msgbox('Please Select a Mode');       
+        end
+
+
+
+    else    
+
+        switch get(handles.MacroMenu,'value')
+            case 2
+                cla(handles.TempAxes);
+                cla(handles.PressureAxes);
+                disp('Beginning test for Absolute Accuracy over Temperature WITHOUT logging...\n');
+                AAOT_nolog(CPC,tchamber, 70, ip,handle,skipWait);
+            case 3
+                cla(handles.TempAxes);
+                cla(handles.PressureAxes);
+                disp('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis WITHOUT logging...\n');
+                AAOT_TCO_TH_nolog(CPC, tchamber, 70, handles,skipWait);
+            case 4
+                cla(handles.TempAxes);
+                cla(handles.PressureAxes);
+                disp('Beginning test Linearity and Pressure Hysteresis WITHOUT logging...\n');
+                Lin_PH_nolog(CPC, tchamber, 25, ip, handles,skipWait);
+            case 5
+                cla(handles.TempAxes);
+                cla(handles.PressureAxes);
+                disp('beginning whole test suite');
+
+            otherwise
+                msgbox('Please Select a Mode');       
+        end
+
+
     end
-    
-    
-    
-else    
-    
-    switch get(handles.MacroMenu,'value')
-        case 2
-            cla(handles.TempAxes);
-            cla(handles.PressureAxes);
-            disp('Beginning test for Absolute Accuracy over Temperature WITHOUT logging...\n');
-            AAOT_nolog(CPC,tchamber, 70, ip,handle,skipWait);
-        case 3
-            cla(handles.TempAxes);
-            cla(handles.PressureAxes);
-            disp('Beginning test for Absolute Accuracy over Temperature w/ TCO + Temperature Hysteresis WITHOUT logging...\n');
-            AAOT_TCO_TH_nolog(CPC, tchamber, 70, handles,skipWait);
-        case 4
-            cla(handles.TempAxes);
-            cla(handles.PressureAxes);
-            disp('Beginning test Linearity and Pressure Hysteresis WITHOUT logging...\n');
-            Lin_PH_nolog(CPC, tchamber, 25, ip, handles,skipWait);
-        case 5
-            cla(handles.TempAxes);
-            cla(handles.PressureAxes);
-            disp('beginning whole test suite');
-        
-        otherwise
-            msgbox('Please Select a Mode');       
-    end
-    
-        
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -358,7 +366,8 @@ function TempAxes_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: place code in OpeningFcn to populate TempAxes
-axis([0,100,0,80]);
+ylim([0, 100]);
+axis auto;
 
 
 % --- Executes during object creation, after setting all properties.
@@ -442,11 +451,25 @@ if handles.metricdata.isLog == 1
     set(handles.DeviceIP,'Enable','on');
     set(handles.GPIB_CPC,'Enable','on');
     set(handles.GPIB_Temp,'Enable','on');
+    handles.metricdata.ip = GetIP;
+    if isempty(handles.metricdata.ip) == 1
+       set(handles.DeviceIP,'String','no device found');
+    else
+        set(handles.DeviceIP,'String',handles.metricdata.ip);
+        handles.metricdata.pin = GetPIN(handles.metricdata.ip,handles);
+        set(handles.DeviceName,'String', handles.metricdata.pin);
+
+    end
 else
     set(handles.DeviceIP,'Enable','off');
     set(handles.GPIB_CPC,'Enable','off');
     set(handles.GPIB_Temp,'Enable','off');
 end
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % --- Executes on button press in initButton.
@@ -460,24 +483,22 @@ function initButton_Callback(hObject, eventdata, handles)
 global tchamber;
 global CPC;
 
-handles.metricdata.ip = getIP;
-set(handles.DeviceIP,'String',handles.metricdata.ip);
-obj = RT_init(handles.metricdata.ip);
-RT_log(obj);
-RT_startlog(obj);
-PutString(obj, ['cat /pps/system/nvram/deviceinfo | grep PIN:: | sed -e ''s/PIN::0x//g''' char(13)]);
-RT_stoplog(obj);
-pause(0.5)
 set(handles.initButton,'Enable','off');
+
 tchamber = InitT(handles.metricdata.GPIB_tchamber);
 PowerOn(tchamber); %Turns on temperature chamber
 %Standby(tchamber);
 %handles.metricdata.tchamber = tchamber
 CPC = InitP(handles.metricdata.GPIB_CPC);
+
 %handles.metricdata.CPC = CPC
 set(handles.startButton,'Enable','on');
-set(handles.ManualButton,'Enable','on');
 set(handles.ManualButton,'String','Set');
+if(get(handles.MacroMenu,'value') == 6)
+    set(handles.ManualButton,'Enable','on');
+end
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -489,8 +510,13 @@ function ManualButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 FileInit('scrap.csv');
-SetTemp(CPC,tchamber,str2double(get(txtConstTemp, 'String')),handles,'scrap.csv');
-SetPressure(CPC,tchamber,str2double(get(txtConstPres, 'String')),handles,'scrap.csv');
+global CPC;
+global tchamber;
+pause(1);
+cla(handles.TempAxes);
+cla(handles.PressureAxes);
+SetTemp(CPC,tchamber,str2double(get(handles.txtConstTemp, 'String')),handles,'scrap.csv');
+SetPressure(CPC,tchamber,str2double(get(handles.txtConstPres, 'String')),handles);
 
 
 
@@ -519,5 +545,28 @@ function PressureAxes_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: place code in OpeningFcn to populate PressureAxes
-axis([0,100,60,130]);
+ylim([50, 140]);
+axis auto;
 
+
+
+function ModelNumber_Callback(hObject, eventdata, handles)
+% hObject    handle to ModelNumber (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of ModelNumber as text
+%        str2double(get(hObject,'String')) returns contents of ModelNumber as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function ModelNumber_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ModelNumber (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
