@@ -165,11 +165,11 @@ PowerOff(tchamber);
 
 dirname = [ModelNumber,'_',pin,'_',date];
 mkdir(dirname);
-movefile(FILE_LIN, dirname);
-movefile(FILE_LIN_ref, dirname);
-movefile(FILE_TCO, dirname);
-movefile(FILE_TCO_ref, dirname);
-movefile(FILE_AAOT_ref, dirname);
-movefile(FILE_AAOT, dirname);
+copyfile(FILE_LIN, dirname);
+copyfile(FILE_LIN_ref, dirname);
+copyfile(FILE_TCO, dirname);
+copyfile(FILE_TCO_ref, dirname);
+copyfile(FILE_AAOT_ref, dirname);
+copyfile(FILE_AAOT, dirname);
 
   
